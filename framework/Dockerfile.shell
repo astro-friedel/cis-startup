@@ -1,5 +1,0 @@
-FROM python:2
-
-RUN pip install cis_interface astropy
-
-CMD [ "/bin/bash" ]
