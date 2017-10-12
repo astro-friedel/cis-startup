@@ -1,9 +1,9 @@
-# KnowEnG Platform API / UI / IDE
-See https://bitbucket.org/arivisualanalytics/nest/src
+# Crops in Silico Platform API / UI / IDE
+See https://github.com/cropsinsilico
 
 # Build
 ```bash
-docker build -t bodom0015/cloud9-nest .
+docker build -t bodom0015/cloud9-cis .
 ```
 
 # Run
@@ -23,7 +23,7 @@ This will set up the routes for your application.
 
 NOTE: This must be done before starting the loadbalancer to automatically start serving on port 443
 
-Then start up the KnowEnG platform:
+Then start up the Crops in Silico platform:
 ```bash
 kubectl create -f loadbalancer.yaml,nest.yaml
 ```
@@ -41,11 +41,11 @@ Name          ~          Example Value
 # Development environment
 Make sure you have a `basic-auth` and `nest-tls-secret` secrets before running Cloud9!
 ```bash
-root@knowdev2:/home/ubuntu# kubectl get secret
+root@my-vm:/home/ubuntu# kubectl get secret
 NAME                  TYPE                                  DATA      AGE
 basic-auth            Opaque                                1         4d
 default-token-fsnqw   kubernetes.io/service-account-token   3         4d
-nest-tls-secret       Opaque                                2         4d
+cis-tls-secret       Opaque                                2         4d
 ```
 
 To start Cloud9:

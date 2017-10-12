@@ -1,0 +1,15 @@
+FROM python:2
+
+RUN apt-get -qq update && \
+    apt-get -qq install vim libblas-dev liblapack-dev libatlas-base-dev gfortran && \
+    apt-get -qq clean all && \
+    apt-get -qq autoclean && \
+    apt-get -qq autoremove && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip install scanf numpy pyyaml pystache sysv-ipc astropy
+
+WORKDIR /data
+COPY . /data
+
+RUN python setup.py install

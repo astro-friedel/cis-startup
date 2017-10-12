@@ -6,7 +6,11 @@
 # Location of "kubectl" binary
 BINDIR="$HOME/bin"
 ECHO="echo -e"
-DOMAIN="*.knowhub.org"
+DOMAIN="*.cis.ndslabs.org"
+
+# Locations of source code / TLS certs
+SRC_DIR="/home/core/Cis_Repository"
+CRT_DIR="${SRC_DIR}/kubernetes"
 
 # Stop everything first
 $BINDIR/kubectl delete -f platform/
@@ -47,13 +51,11 @@ else
 fi
 
 # Ensure source directory exists where we expect
-SRC_DIR="/home/ubuntu/nest"
 if [ ! -d "$SRC_DIR" ]; then
-    git clone https://bitbucket.org/arivisualanalytics/nest.git /home/ubuntu || exit 1
+    git clone https://github.com/cropsinsilico/Cis_Repository ${SRC_DIR} || exit 1
 fi
 
 # Make sure that we have self-signed certs generated
-CRT_DIR="${SRC_DIR}/nest_flask_etc/nginx/ssl"
 if [ ! -f "${CRT_DIR}/${DOMAIN}.cert" ]; then
     $ECHO "\nGenerating self-signed certificate for $DOMAIN"
     mkdir -p ${CRT_DIR}
@@ -68,8 +70,8 @@ else
 fi
 
 # Make sure our TLS certs have been loaded as secrets
-$BINDIR/kubectl create secret generic nest-tls-secret --from-file=tls.crt="${CRT_DIR}/${DOMAIN}.cert" --from-file=tls.key="${CRT_DIR}/${DOMAIN}.key" --namespace=kube-system
-$BINDIR/kubectl create secret generic nest-tls-secret --from-file=tls.crt="${CRT_DIR}/${DOMAIN}.cert" --from-file=tls.key="${CRT_DIR}/${DOMAIN}.key"
+$BINDIR/kubectl create secret generic cis-tls-secret --from-file=tls.crt="${CRT_DIR}/${DOMAIN}.cert" --from-file=tls.key="${CRT_DIR}/${DOMAIN}.key" --namespace=kube-system
+$BINDIR/kubectl create secret generic cis-tls-secret --from-file=tls.crt="${CRT_DIR}/${DOMAIN}.cert" --from-file=tls.key="${CRT_DIR}/${DOMAIN}.key"
 
 # Start loadbalancer, nest, and Cloud9 applications
 $BINDIR/kubectl apply -f platform

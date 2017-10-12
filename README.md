@@ -1,5 +1,5 @@
-# ndslabs-knoweng
-An experiment in running KnowEnG platform, pipelines, and IDE under [Kubernetes](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/).
+# cis-startup
+An experiment in running the Crops in Silico platform, pipelines, and IDE under [Kubernetes](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/).
 
 # Prerequisites
 * Docker (preferrably 1.10.x - 1.13.x)
@@ -13,8 +13,8 @@ sudo mount --make-shared /
 
 # Clone the Source
 ```bash
-git clone https://github.com/nds-org/ndslabs-knoweng
-cd ndslabs-knoweng
+git clone https://github.com/bodom015/cis-startup
+cd cis-startup
 ```
 
 # Building all Docker Images
@@ -46,29 +46,28 @@ NOTE: You'll need to manually add the path the the `kubectl` binary to your `$PA
 For some introductory slides to Kubernetes terminology, check out https://docs.google.com/presentation/d/1VDYrSlwLY_Efucq_n75m9Rf_euJIOIACh27BfOmh-ps/edit?usp=sharing
 
 # Running the Platform
-To run the KnowEnG platform and a Cloud9 IDE:
+To run the Crops in Silico platform and a Cloud9 IDE:
 ```bash
-./knoweng.sh
+./cis.sh
 ```
 
-For an example of the running platform, see: [knoweng.org/analyze](knoweng.org/analyze)
-
 ## Behind the Scenes
-The `./knoweng.sh` helper script does several things:
+The `./cis.sh` helper script does several things:
 * Ensures that the user has a `basic-auth` secret set up for Cloud9 to consume
-* Ensures that the source code is checked out to `/home/ubuntu` (you will be prompted for your BitBucket credentials)
+* Ensures that the source code is checked out to `/home/core` (you will be prompted for your BitBucket credentials)
 * Generates self-signed SSL certs if they are not found for the given domain
 * Ensures that certificates have been imported as Kubernetes secrets
-* Create [ingress rules](ingress.yaml) to route `/ide.html` to Cloud9, and `/` to the KnowEnG Dashboard
+* Create [ingress rules](ingress.yaml) to route `/ide.html` to Cloud9, and `/` to the Crops in Silico Dashboard
 * Starts up the Kubernetes [NGINX Ingress Controller](https://github.com/kubernetes/ingress/tree/master/controllers/nginx)
-* Starts up a Pod running the 4 containers comprising KnowEnG Dashboard
+* Starts up a Pod running an instance of RabbitMQ
+* Starts up a Pod running a shell containing a pre-installed [cis_interface](https://github.com/cropsinsilico/cis_interface)
 * Starts up a Pod running the Cloud9 IDE
 
 
 # Viewing Pod Logs
 To view the logs of an individual pod (where your work items are being executed):
 ```bash
-root@knowdev2:/home/ubuntu/ndslabs-knoweng# kubectl get pods                                                                                                     
+root@my-vm:/home/core/cis-startup # kubectl get pods                                                                                                     
 NAME                         READY     STATUS    RESTARTS   AGE
 cloud9-984f9                 1/1       Running   0          4h
 default-http-backend-blrqv   1/1       Running   0          4h
@@ -109,7 +108,7 @@ but they will spawn Pods (groups of containers) to execute the desired work item
 ## Monitoring Jobs
 To view the status of your jobs and their pods:
 ```bash
-core@nds842-master1 ~/ndslabs-knoweng $ kubectl get jobs,pods -a
+core@my-vm ~/cis-startup $ kubectl get jobs,pods -a
 NAME           DESIRED   SUCCESSFUL   AGE
 jobs/gp-test   1         1            1m
 

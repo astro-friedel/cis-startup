@@ -1,4 +1,3 @@
-
 # Ingress rules assign a hostname/path to expose particular ports to the public internet
 # NOTE: "Host" header must match in order to be routed
 apiVersion: extensions/v1beta1
@@ -11,44 +10,16 @@ metadata:
 spec:
   tls:
   - hosts:
-    - knowdev2.knowhub.org
-    secretName: nest-tls-secret
+    - cis.mldev.ndslabs.org
+    secretName: cis-tls-secret
   rules:
-  - host: knowdev2.knowhub.org
+  - host: cis.mldev.ndslabs.org
     http:
       paths:
       - path: /
         backend:
-          serviceName: nest
-          servicePort: 80
-      - path: /static/
-        backend:
-          serviceName: nest
-          servicePort: 80
-      - path: /static/img/
-        backend:
-          serviceName: nest
-          servicePort: 80
-      - path: /static/node_modules/
-        backend:
-          serviceName: nest
-          servicePort: 80
-      - path: /static/dist/
-        backend:
-          serviceName: nest
-          servicePort: 80
-      - path: /static/css/knoweng/
-        backend:
-          serviceName: nest
-          servicePort: 80
-      - path: /static/css/mmbdb/
-        backend:
-          serviceName: nest
-          servicePort: 80
-      - path: /api/
-        backend:
-          serviceName: nest
-          servicePort: 80
+          serviceName: cis-ui
+          servicePort: 3000
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -63,13 +34,10 @@ metadata:
 spec:
   tls:
   - hosts:
-#    - cloud9.knowdev2.knowhub.org
-    - knowdev2.knowhub.org
-#    secretName: cloud9-tls-secret
-    secretName: nest-tls-secret
+    - cis.mldev.ndslabs.org
+    secretName: cis-tls-secret
   rules:
-#  - host: cloud9.knowdev2.knowhub.org
-  - host: knowdev2.knowhub.org
+  - host: cis.mldev.ndslabs.org
     http:
       paths:
       - path: /ide.html
@@ -80,55 +48,11 @@ spec:
         backend:
           serviceName: cloud9
           servicePort: 8001
-      - path: /static/mini_require.js
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /static/lib/
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /static/smith/
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /static/kaefer/
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /static/engine.io/
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /static/msgpack-js/
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /static/standalone/
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /static/vfs-socket/
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /static/plugins/
+      - path: /static/
         backend:
           serviceName: cloud9
           servicePort: 8001
       - path: /configs
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /static/js/
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /static/font-awesome/
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /static/css/
         backend:
           serviceName: cloud9
           servicePort: 8001
