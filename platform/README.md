@@ -1,9 +1,10 @@
 # Crops in Silico Platform API / UI / IDE
 See https://github.com/cropsinsilico
 
-## Build
+# Build
 ```bash
-docker build -t bodom0015/cloud9-cis .
+git clone https://github.com/cropsinsilico/cis-ui && cd cis-ui
+docker build -t bodom0015/cis-ui .
 ```
 
 # Run
@@ -42,6 +43,11 @@ NAME                  TYPE                                  DATA      AGE
 basic-auth            Opaque                                1         4d
 default-token-fsnqw   kubernetes.io/service-account-token   3         4d
 cis-tls-secret        Opaque                                2         4d
+```
+
+## Build IDE
+```bash
+docker build -t bodom0015/cloud9-cis .
 ```
 
 ## Start IDE Container
