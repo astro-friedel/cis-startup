@@ -6,6 +6,8 @@
 # Location of "kubectl" binary
 BINDIR="$HOME/bin"
 ECHO="echo -e"
+
+# TEMP: Do we have access to a domain we can use in development?
 DOMAIN="*.cis.ndslabs.org"
 
 # Locations of source code / TLS certs
