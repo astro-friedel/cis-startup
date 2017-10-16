@@ -3,39 +3,20 @@
 version: '2'
 services:
   # Pipelines
-  gene-prioritization:
-    build: ./pipelines/gene-prioritization
-    image: bodom0015/gene-prioritization
-
-  gene-set-characterization:
-    build: ./pipelines/gene-set-characterization
-    image: bodom0015/gene-set-characterization
-
-  samples-clustering:
-    build: ./pipelines/samples-clustering
-    image: bodom0015/samples-clustering
-
-  data-cleanup:
-    build: ./pipelines/data-cleanup
-    image: bodom0015/data-cleanup
+  cis-interface:
+    build: ./framework/
+    image: bodom0015/cis_interface
 
   # IDE
-  cloud9:
+  cis-cloud9:
     build: ./platform/
-    image: bodom0015/cloud9-nest
+    image: bodom0015/cloud9-cis
     
   # Platform
-#  nest_flask_i:
-#    build: ./docker/Dockerfile-nest_flask
-#    image: bodom0015/nest:flask
-#  nest_jobs_i:
-#    build: ./docker/Dockerfile-nest_jobs
-#    image: bodom0015/nest:jobs
-  redis_i:
-    image: "redis:3.0.3"
+  cis-ui:
+    build: ./docker/Dockerfile-nest_flask
+    image: bodom0015/nest:flask
+  cis-rabbitmq:
+    image: "rabbit:3.6.12"
     ports: 
-     - "6379:6379"
-  postgres_i:
-    image: "postgres:9.6.2"
-    ports: 
-     - "5432:5432"
+     - "5672:5672"
