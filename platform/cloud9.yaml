@@ -37,7 +37,7 @@ spec:
          name: dockerbin
       containers:
       - name: cloud9 
-        image: bodom0015/cloud9-nest:latest
+        image: bodom0015/cloud9-cis:latest
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true
