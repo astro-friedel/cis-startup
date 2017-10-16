@@ -81,29 +81,15 @@ kubectl logs -f nginx-ilb-rc-02fzw
 kubectl logs -f nest-1442377537-3hhbf -c flask
 ```
 
-# Running Pipelines
+# Running the Framework
 To run the Data Cleanup pipeline:
 ```bash
-kubectl create -f pipelines/dc.job.yaml
+kubectl create -f framework/hello/python.job.yaml
+kubectl create -f framework/hello/gcc.job.yaml
+kubectl create -f framework/hello/gpp.job.yaml
 ```
 
-To run the Gene Prioritization pipeline:
-```bash
-kubectl create -f pipelines/gp.job.yaml
-```
-
-To run the Gene Set Characterization pipeline:
-```bash
-kubectl create -f pipelines/gsc.job.yaml
-```
-
-To run the Samples Clustering pipeline:
-```bash
-kubectl create -f pipelines/sc.job.yaml
-```
-
-This will create the Job objects on your Kubernetes cluster. Job objects themselves don't execute anything (and therefore don't keep logs),
-but they will spawn Pods (groups of containers) to execute the desired work item(s).
+This will create the Job objects on your Kubernetes cluster. Job objects themselves don't execute anything (and therefore don't keep logs), but they will spawn Pods (groups of containers) to execute the desired work item(s).
 
 ## Monitoring Jobs
 To view the status of your jobs and their pods:
