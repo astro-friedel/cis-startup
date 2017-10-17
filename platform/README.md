@@ -47,7 +47,7 @@ cis-tls-secret        Opaque                                2         4d
 
 ## Build IDE
 ```bash
-docker build -t bodom0015/cloud9-cis .
+docker build -t bodom0015/cloud9-cis -f Dockerfile.cloud9 .
 ```
 
 ## Start IDE Container

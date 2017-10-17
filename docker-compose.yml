@@ -1,21 +1,24 @@
-# A Docker compose file to cimplify building up the images required to run the knoweng pipeline
+# A Docker compose file to simplify building up the images required to run the knoweng pipeline
 
-version: '2'
+version: '3'
 services:
-  # Pipelines
+  # Framework / Models
   cis-interface:
     build: ./framework/
     image: bodom0015/cis_interface
 
   # IDE
   cis-cloud9:
-    build: ./platform/
+    build:
+      context: ./platform/
+      dockerfile: Dockerfile.cloud9
     image: bodom0015/cloud9-cis
     
   # Platform
   cis-ui:
-    build: ./docker/Dockerfile-nest_flask
-    image: bodom0015/nest:flask
+    build: 
+      context: https://github.com/cropsinsilico/cis-ui.git
+    image: bodom0015/cis-ui
   cis-rabbitmq:
     image: "rabbit:3.6.12"
     ports: 
