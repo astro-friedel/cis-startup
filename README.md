@@ -1,5 +1,5 @@
 # cis-startup
-An experiment in running the Crops in Silico platform, pipelines, and IDE under [Kubernetes](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/).
+An experiment in running the Crops in Silico platform, framework, and IDE under [Kubernetes](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/).
 
 # Prerequisites
 * Docker 1.13.0+
