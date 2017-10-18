@@ -2,7 +2,7 @@
 An experiment in running the Crops in Silico platform, pipelines, and IDE under [Kubernetes](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/).
 
 # Prerequisites
-* Docker (preferrably 1.10.x - 1.13.x)
+* Docker 1.13.0+
 * Mount propagation must be enabled
   * See https://docs.portworx.com/knowledgebase/shared-mount-propogation.html#ubuntu-configuration-and-shared-mounts
 
