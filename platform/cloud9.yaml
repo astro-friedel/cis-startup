@@ -35,6 +35,12 @@ spec:
        - hostPath:
             path: "/usr/bin/docker"
          name: dockerbin
+       - hostPath:
+            path: "/run/torcx"
+         name: runtorcx
+       - hostPath:
+            path: "/run/metadata"
+         name: runmetadata
       containers:
       - name: cloud9 
         image: ndslabs/cloud9-all:latest
@@ -42,11 +48,15 @@ spec:
           privileged: true
         volumeMounts:
           - name: src
-            mountPath: "/cloud9/workspace"
+            mountPath: "/workspace"
           - name: dockersock
             mountPath: "/var/run/docker.sock"
           - name: dockerbin
-            mountPath: "/bin/docker"
+            mountPath: "/usr/bin/docker"
+          - name: runtorcx
+            mountPath: "/run/torcx"
+          - name: runmetadata
+            mountPath: "/run/metadata"
         env:
         # Enable collaborative editing
         - name: C9_EXTRA
