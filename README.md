@@ -1,12 +1,12 @@
 # cis-startup
-An experiment in running the Crops in Silico platform, pipelines, and IDE under [Kubernetes](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/).
+An experiment in running the Crops in Silico platform, framework, and IDE under [Kubernetes](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/).
 
 # Prerequisites
-* Docker (preferrably 1.10.x - 1.13.x)
+* Docker 1.13.0+
 * Mount propagation must be enabled
   * See https://docs.portworx.com/knowledgebase/shared-mount-propogation.html#ubuntu-configuration-and-shared-mounts
 
-NOTE: On my Ubuntu AWS VM, I had to run the following command (or else the kubelet container would fail to start):
+NOTE: On an Ubuntu AWS VM, I had to run the following command (or else the kubelet would fail to start):
 ```bash
 sudo mount --make-shared /
 ```
@@ -20,7 +20,7 @@ cd cis-startup
 # Building all Docker Images
 To quickly build up all of the pipeline images:
 ```bash
-./compose.sh
+./compose.sh build
 ```
 
 NOTE: If your Docker version differs, you may need to adjust the version in `./compose.sh`
@@ -62,7 +62,6 @@ The `./cis.sh` helper script does several things:
 * Starts up a Pod running an instance of RabbitMQ
 * Starts up a Pod running a shell containing a pre-installed [cis_interface](https://github.com/cropsinsilico/cis_interface)
 * Starts up a Pod running the Cloud9 IDE
-
 
 # Viewing Pod Logs
 To view the logs of an individual pod (where your work items are being executed):
