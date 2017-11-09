@@ -6,14 +6,36 @@ metadata:
   annotations:
     ingress.kubernetes.io/ssl-redirect: "true"
     ingress.kubernetes.io/force-ssl-redirect: "true"
-  name: nest-ingress
+    ingress.kubernetes.io/app-root: "/index.html"
+  name: noflo-ingress
 spec:
   tls:
   - hosts:
-    - cis.mldev.ndslabs.org
+    - www.cis.ndslabs.org
     secretName: cis-tls-secret
   rules:
-  - host: cis.mldev.ndslabs.org
+  - host: www.cis.ndslabs.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: noflo-ui
+          servicePort: 9999
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+  name: cis-ingress
+spec:
+  tls:
+  - hosts:
+    - proto.cis.ndslabs.org
+    secretName: cis-tls-secret
+  rules:
+  - host: proto.cis.ndslabs.org
     http:
       paths:
       - path: /
@@ -34,12 +56,16 @@ metadata:
 spec:
   tls:
   - hosts:
-    - cis.mldev.ndslabs.org
+    - cloud9.cis.ndslabs.org
     secretName: cis-tls-secret
   rules:
-  - host: cis.mldev.ndslabs.org
+  - host: cloud9.cis.ndslabs.org
     http:
       paths:
+      - path: /
+        backend:
+          serviceName: cloud9
+          servicePort: 8001
       - path: /ide.html
         backend:
           serviceName: cloud9

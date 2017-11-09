@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    component: noflo-ui
+  name: noflo-ui
+spec:
+  ports:
+  - port: 9999
+  selector:
+    component: noflo-ui
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    component: noflo-ui
+  name: noflo-ui
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: noflo-ui
+    spec:
+      containers:
+      - image: bodom0015/noflo-ui:0.22.1
+        name: noflo-ui
+        ports:
+        - containerPort: 9999
+        env:
+        - name: NOFLO_OAUTH_CLIENT_REDIRECT
+          value: "https://www.cis.ndslabs.org"

@@ -1,0 +1,5 @@
+# Don't commit the JSON data just yet
+data/
+
+# Temporary experiment in running each model in it own container
+framework/LeM

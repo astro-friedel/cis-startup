@@ -31,3 +31,10 @@ spec:
         resources:
           limits:
             cpu: 100m
+        volumeMounts:
+        - name: data
+          mountPath: /app/public/data
+      volumes:
+      - name: data
+        hostPath:
+          path: /home/core/cis-startup/data

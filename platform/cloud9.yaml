@@ -9,7 +9,7 @@ spec:
     component: cloud9
   ports:
     - port: 8001
-      targetPort: 8080
+      targetPort: 80
       protocol: TCP
 ---
 apiVersion: v1
@@ -27,7 +27,7 @@ spec:
     spec:
       volumes:
        - hostPath:
-            path: "/home/ubuntu"
+            path: "/home/core"
          name: src
        - hostPath:
             path: "/var/run/docker.sock"
@@ -37,8 +37,7 @@ spec:
          name: dockerbin
       containers:
       - name: cloud9 
-        image: bodom0015/cloud9-cis:latest
-        imagePullPolicy: IfNotPresent
+        image: ndslabs/cloud9-all:latest
         securityContext:
           privileged: true
         volumeMounts:
@@ -49,8 +48,9 @@ spec:
           - name: dockerbin
             mountPath: "/bin/docker"
         env:
+        # Enable collaborative editing
         - name: C9_EXTRA
           value: "--collab"
         ports:
-        - containerPort: 8080
+        - containerPort: 80
           protocol: TCP
