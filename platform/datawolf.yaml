@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    component: cis-datawolf
+  name: cis-datawolf
+spec:
+  ports:
+  - port: 8888
+  selector:
+    component: cis-datawolf
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    component: cis-datawolf
+  name: cis-datawolf
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: cis-datawolf
+    spec:
+      containers:
+      - image: bodom0015/datawolf
+        name: cis-datawolf
+        ports:
+        - containerPort: 8888
+        env:
+        - name: INITIAL_ADMINS
+          value: "lambert8@illinois.edu,bodom0015@gmail.com"
