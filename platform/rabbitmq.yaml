@@ -3,26 +3,24 @@ kind: Service
 metadata:
   labels:
     component: rabbitmq
-  name: rabbitmq-service
+  name: rabbitmq
 spec:
   ports:
   - port: 5672
   selector:
-    app: taskQueue
     component: rabbitmq
 ---
-apiVersion: v1
-kind: ReplicationController
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   labels:
     component: rabbitmq
-  name: rabbitmq-controller
+  name: rabbitmq
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: taskQueue
         component: rabbitmq
     spec:
       containers:

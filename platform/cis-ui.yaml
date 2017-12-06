@@ -2,28 +2,42 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    component: cis-ui
-  name: cis-ui
+    component: cis-prototype
+  name: cis-prototype
 spec:
   ports:
   - port: 3000
+    name: ui
+  - port: 8080
+    name: api
   selector:
-    component: cis-ui
+    component: cis-prototype
 ---
-apiVersion: v1
-kind: ReplicationController
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   labels:
-    component: cis-ui
-  name: cis-ui
+    component: cis-prototype
+  name: cis-prototype
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        component: cis-ui
+        component: cis-prototype
     spec:
+      volumes:
+      - name: data
+        hostPath:
+          path: /home/core/cis-startup/data
       containers:
+      - image: bodom0015/cis-apiserver
+        name: cis-api
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 100m
       - image: bodom0015/cis-ui
         name: cis-ui
         ports:
@@ -34,7 +48,3 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /app/public/data
-      volumes:
-      - name: data
-        hostPath:
-          path: /home/core/cis-startup/data

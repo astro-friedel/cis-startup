@@ -4,17 +4,17 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   annotations:
-    ingress.kubernetes.io/ssl-redirect: "true"
-    ingress.kubernetes.io/force-ssl-redirect: "true"
-    ingress.kubernetes.io/app-root: "/index.html"
-  name: noflo-ingress
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/app-root: "/index.html"
+  name: cis-noflo
 spec:
   tls:
   - hosts:
-    - www.cis.ndslabs.org
+    - noflo.cis.ndslabs.org
     secretName: cis-tls-secret
   rules:
-  - host: www.cis.ndslabs.org
+  - host: noflo.cis.ndslabs.org
     http:
       paths:
       - path: /
@@ -26,9 +26,9 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   annotations:
-    ingress.kubernetes.io/ssl-redirect: "true"
-    ingress.kubernetes.io/force-ssl-redirect: "true"
-  name: cis-ingress
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  name: cis-prototype
 spec:
   tls:
   - hosts:
@@ -40,19 +40,45 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: cis-ui
+          serviceName: cis-prototype
           servicePort: 3000
+      - path: /api
+        backend:
+          serviceName: cis-prototype
+          servicePort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/app-root: "/datawolf/editor"
+  name: cis-datawolf
+spec:
+  tls:
+  - hosts:
+    - datawolf.cis.ndslabs.org
+    secretName: cis-tls-secret
+  rules:
+  - host: datawolf.cis.ndslabs.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: cis-datawolf
+          servicePort: 8888
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: cloud9
   annotations:
-    ingress.kubernetes.io/auth-type: basic
-    ingress.kubernetes.io/auth-secret: basic-auth
-    ingress.kubernetes.io/auth-realm: "Authentication Required"
-    ingress.kubernetes.io/ssl-redirect: "true"
-    ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   tls:
   - hosts:
@@ -65,25 +91,4 @@ spec:
       - path: /
         backend:
           serviceName: cloud9
-          servicePort: 8001
-      - path: /ide.html
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /vfs/
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /static/
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /configs
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
-      - path: /_ping
-        backend:
-          serviceName: cloud9
-          servicePort: 8001
----
+          servicePort: 80

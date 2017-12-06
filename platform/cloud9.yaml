@@ -8,18 +8,15 @@ spec:
   selector:
     component: cloud9
   ports:
-    - port: 8001
-      targetPort: 80
+    - port: 80
       protocol: TCP
 ---
-apiVersion: v1
-kind: ReplicationController
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: cloud9
 spec:
   replicas: 1
-  selector:
-    component: cloud9
   template:
     metadata:
       labels:

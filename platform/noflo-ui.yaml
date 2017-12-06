@@ -10,8 +10,8 @@ spec:
   selector:
     component: noflo-ui
 ---
-apiVersion: v1
-kind: ReplicationController
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   labels:
     component: noflo-ui
@@ -30,4 +30,4 @@ spec:
         - containerPort: 9999
         env:
         - name: NOFLO_OAUTH_CLIENT_REDIRECT
-          value: "https://www.cis.ndslabs.org"
+          value: "https://noflo.cis.ndslabs.org"
