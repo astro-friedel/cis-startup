@@ -7,6 +7,8 @@
 BINDIR="$HOME/bin"
 ECHO="echo -e"
 
+$ECHO ''
+
 # TEMP: Do we have access to a domain we can use in development?
 DOMAIN="*.cis.ndslabs.org"
 
@@ -15,7 +17,7 @@ SRC_DIR="/home/core/Cis_Repository"
 CRT_DIR="${SRC_DIR}/kubernetes"
 
 # Stop everything first
-$BINDIR/kubectl delete -f platform/
+#$BINDIR/kubectl delete -f platform/
 
 # Make sure we've created a basic-auth secret
 kube_output="$(kubectl get secret -o name basic-auth 2>&1)"
@@ -52,10 +54,16 @@ else
     $ECHO "basic-auth" secret already exists... reusing
 fi
 
+$ECHO ''
+
 # Ensure source directory exists where we expect
 if [ ! -d "$SRC_DIR" ]; then
     git clone https://github.com/cropsinsilico/Cis_Repository ${SRC_DIR} || exit 1
+else
+    $ECHO source code has already been cloned to the correct location... reusing
 fi
+
+$ECHO ''
 
 # Make sure that we have self-signed certs generated
 if [ ! -f "${CRT_DIR}/${DOMAIN}.cert" ]; then
@@ -71,9 +79,13 @@ else
     $ECHO "self-signed SSL certificates already exist for ${DOMAIN}... reusing"
 fi
 
+$ECHO ''
+
 # Make sure our TLS certs have been loaded as secrets
 $BINDIR/kubectl create secret generic cis-tls-secret --from-file=tls.crt="${CRT_DIR}/${DOMAIN}.cert" --from-file=tls.key="${CRT_DIR}/${DOMAIN}.key" --namespace=kube-system
 $BINDIR/kubectl create secret generic cis-tls-secret --from-file=tls.crt="${CRT_DIR}/${DOMAIN}.cert" --from-file=tls.key="${CRT_DIR}/${DOMAIN}.key"
+
+$ECHO ''
 
 # Start loadbalancer, nest, and Cloud9 applications
 $BINDIR/kubectl apply -f platform
