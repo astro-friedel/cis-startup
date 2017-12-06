@@ -12,16 +12,16 @@ cat ${TEMPLATE_PATH} | sed -e "s#host:.*#host: ${RABBIT_HOST:-localhost}#" \
     -e "s#vhost:.*#vhost: ${RABBIT_VHOST}#" > ${CFG_PATH}
 
 # Print parameters / progress to the logs
-echo "Running hello_c with the following parameters:"
-cat ${CFG_PATH}
-echo "-------"
+#echo "Running hello_c with the following parameters:"
+#cat ${CFG_PATH}
+#echo "-------"
 
 # Run the hello_c model
 cd /usr/local/lib/python2.7/site-packages/cis_interface/examples/hello
 cisrun ${YAML_FILES}
 
-echo ''
-echo 'Job complete!'
+#echo ''
+#echo 'Job complete!'
 
 # TODO: Print Output file names/contents?
 #echo "Output directory:"
