@@ -1,4 +1,4 @@
-FROM eeacms/cloud9:latest
+FROM ndslabs/cloud9-all:latest
 
 ENV K8S_VERSION="1.5.2"
 
