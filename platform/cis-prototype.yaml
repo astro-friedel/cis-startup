@@ -38,6 +38,11 @@ spec:
         resources:
           limits:
             cpu: 100m
+        env:
+        - name: RABBIT_HOST
+          value: $(RABBITMQ_SERVICE_HOST)
+        - name: RABBIT_NAMESPACE
+          value: lambert8
       - image: bodom0015/cis-ui
         name: cis-ui
         ports:

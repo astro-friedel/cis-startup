@@ -52,7 +52,7 @@ docker --version >/dev/null 2>&1 || ($ECHO 'Docker must be installed to run Kube
     --volume=/var/lib/docker/:/var/lib/docker:rw \
     --volume=/var/lib/kubelet:/var/lib/kubelet:rw,shared \
     --volume=/var/run:/var/run:rw \
-    --volume=$(pwd)/manifests:/etc/kubernetes/manifests \
+    --volume=$(pwd)/manifests:/etc/kubernetes/manifests/1.5 \
     --net=host \
     --pid=host \
     --privileged=true \
