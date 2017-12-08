@@ -27,9 +27,12 @@ spec:
         component: cis-prototype
     spec:
       volumes:
-      - name: data
+      #- name: data
+      #  hostPath:
+      #    path: /home/core/cis-startup/data
+      - name: uisrc
         hostPath:
-          path: /home/core/cis-startup/data
+          path: /home/core/cis-ui/
       containers:
       - image: bodom0015/cis-apiserver
         name: cis-api
@@ -50,6 +53,9 @@ spec:
         resources:
           limits:
             cpu: 100m
+        #volumeMounts:
+        #- name: data
+        #  mountPath: /app/public/data
         volumeMounts:
-        - name: data
-          mountPath: /app/public/data
+        - name: uisrc
+          mountPath: /app
