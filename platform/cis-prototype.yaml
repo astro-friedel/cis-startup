@@ -6,7 +6,7 @@ metadata:
   name: cis-prototype
 spec:
   ports:
-  - port: 3000
+  - port: 80
     name: ui
   - port: 8080
     name: api
@@ -27,9 +27,9 @@ spec:
         component: cis-prototype
     spec:
       volumes:
-      #- name: data
-      #  hostPath:
-      #    path: /home/core/cis-startup/data
+      - name: apisrc 
+        hostPath:
+          path: /home/core/cis-apiserver/
       - name: uisrc
         hostPath:
           path: /home/core/cis-ui/
@@ -38,24 +38,18 @@ spec:
         name: cis-api
         ports:
         - containerPort: 8080
-        resources:
-          limits:
-            cpu: 100m
         env:
         - name: RABBIT_HOST
           value: $(RABBITMQ_SERVICE_HOST)
         - name: RABBIT_NAMESPACE
           value: lambert8
+        volumeMounts:
+        - name: apisrc 
+          mountPath: /usr/src/app/
       - image: bodom0015/cis-ui
         name: cis-ui
         ports:
-        - containerPort: 3000
-        resources:
-          limits:
-            cpu: 100m
-        #volumeMounts:
-        #- name: data
-        #  mountPath: /app/public/data
+        - containerPort: 80
         volumeMounts:
         - name: uisrc
-          mountPath: /app
+          mountPath: /usr/share/nginx/html
