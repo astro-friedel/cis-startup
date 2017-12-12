@@ -74,7 +74,9 @@ The [platform ingress rules](platform/ingress.yaml) will set up routes to the fo
 Once all of the containers have started up, we can easily test out the dfferent proposed components to see what might fit best.
 
 # Viewing Pod Logs
-To view the logs of an individual pod (where your work items are being executed):
+Every component of the platform runs in a separate container.
+
+To view the logs of an individual pod (or container):
 ```bash
 core@my_vm01 ~/cis-startup $ kubectl get pods
 NAME                             READY     STATUS    RESTARTS   AGE
@@ -91,9 +93,10 @@ kubectl logs -f nginx-ilb-rc-1sqck
 
 # For multi-container pods, you must specify a container with -c
 kubectl logs -f cis-prototype-1660495536-35dbz -c cis-api
+kubectl logs -f cis-prototype-1660495536-35dbz -c cis-ui
 ```
 
-# Running the Framework (Coming Soon)
+# Running the Framework
 To run the [`cis_interface`](https://github.com/cropsinsilico/cis_interface) CLI as a Kubernetes Job:
 ```bash
 kubectl create -f framework/hello/hello-py.job.yaml
@@ -103,15 +106,16 @@ kubectl create -f framework/hello/hello-cpp.job.yaml
 
 This will create the Job objects on your Kubernetes cluster. Job objects themselves don't execute anything (and therefore don't keep logs), but they will spawn Pods (groups of containers) to execute the desired work item(s).
 
-## Monitoring Jobs (Coming Soon)
+## Monitoring Jobs
 To view the status of your jobs and their pods:
 ```bash
-core@my-vm ~/cis-startup $ kubectl get jobs,pods -a
-NAME            DESIRED   SUCCESSFUL   AGE
-jobs/gcc-test   1         1            1m
+core@my_vm01 ~/cis-startup/framework $ kubectl get jobs
+NAME      DESIRED   SUCCESSFUL   AGE
+hello-c   1         0            2s
 
-NAME                             READY     STATUS      RESTARTS   AGE
-po/gcc-test-hzcq8                0/1       Completed   0          1m
+core@my_vm01 ~/cis-startup/framework $ kubectl get pods -a
+NAME                             READY     STATUS    RESTARTS   AGE
+hello-c-7twxg                    1/1       Running   0          6s
 ```
 
 This will list off all running jobs and their respectives pods (replicas).
@@ -121,58 +125,25 @@ NOTE: The `-a` flag tells to Kubernetes to include pods that have `Completed` in
 ## Viewing Job logs
 We can view the logs for our Jobs the same we that we view logs for other pods:
 ```bash
-# View the logs of a Pod spawned by the "gcc-test" Job
-kubectl logs -f gcc-test-hzcq8 
+core@my_vm01 ~/cis-startup/framework $ kubectl logs -f hello-c-8xlpt
+Hello from C
+hello(C): Created I/O channels
+hello(C): Received 14 bytes from file: this is a test
+hello(C): Sent to outq
+hello(C): Received 14 bytes from queue: this is a test
+hello(C): Sent to outf
+Goodbye from C
 ```
 
 ## Viewing output (Coming Soon)
-Check the contents of your shared storage to view output files:
-```bash
-core@nds842-node1 ~ $ du -h -a /var/glfs/global/jobs
-512	/var/glfs/global/jobs/data-cleanup/results/TEST_1_gene_expression_UNMAPPED.tsv
-0	/var/glfs/global/jobs/data-cleanup/results/TEST_1_gene_expression_MAP.tsv
-1.0K	/var/glfs/global/jobs/data-cleanup/results/log_gene_prioritization_pipeline.yml
-5.5K	/var/glfs/global/jobs/data-cleanup/results
-9.5K	/var/glfs/global/jobs/data-cleanup
-512	/var/glfs/global/jobs/gene-prioritization/results/drug_A_bootstrap_net_correlation_pearson_Mon_03_Jul_2017_23_37_33.461636543_viz.tsv
-512	/var/glfs/global/jobs/gene-prioritization/results/drug_B_bootstrap_net_correlation_pearson_Mon_03_Jul_2017_23_37_33.502016782_viz.tsv
-512	/var/glfs/global/jobs/gene-prioritization/results/drug_C_bootstrap_net_correlation_pearson_Mon_03_Jul_2017_23_37_33.491072654_viz.tsv
-512	/var/glfs/global/jobs/gene-prioritization/results/drug_E_bootstrap_net_correlation_pearson_Mon_03_Jul_2017_23_37_33.497779369_viz.tsv
-512	/var/glfs/global/jobs/gene-prioritization/results/drug_D_bootstrap_net_correlation_pearson_Mon_03_Jul_2017_23_37_33.502823591_viz.tsv
-512	/var/glfs/global/jobs/gene-prioritization/results/ranked_genes_per_phenotype_bootstrap_net_correlation_pearson_Mon_03_Jul_2017_23_37_33.781181335_download.tsv
-512	/var/glfs/global/jobs/gene-prioritization/results/top_genes_per_phenotype_bootstrap_net_correlation_pearson_Mon_03_Jul_2017_23_37_33.786688327_download.tsv
-7.5K	/var/glfs/global/jobs/gene-prioritization/results
-12K	/var/glfs/global/jobs/gene-prioritization
-512	/var/glfs/global/jobs/gene-set-characterization/results/net_path_ranked_by_property_Mon_03_Jul_2017_23_37_33.879306793.df
-512	/var/glfs/global/jobs/gene-set-characterization/results/net_path_sorted_by_property_score_Mon_03_Jul_2017_23_37_33.885757923.df
-512	/var/glfs/global/jobs/gene-set-characterization/results/net_path_droplist_Mon_03_Jul_2017_23_37_33.891902446.tsv
-5.5K	/var/glfs/global/jobs/gene-set-characterization/results
-2.5K	/var/glfs/global/jobs/gene-set-characterization/job-parameters.yml
-12K	/var/glfs/global/jobs/gene-set-characterization
-365K	/var/glfs/global/jobs/samples-clustering/results/consensus_matrix_cc_net_nmf_Mon_03_Jul_2017_23_39_04.368379831_viz.tsv
-512	/var/glfs/global/jobs/samples-clustering/results/silhouette_average_cc_net_nmf_Mon_03_Jul_2017_23_39_04.496203184_viz.tsv
-4.0K	/var/glfs/global/jobs/samples-clustering/results/samples_label_by_cluster_cc_net_nmf_Mon_03_Jul_2017_23_39_04.502247810_viz.tsv
-1.5K	/var/glfs/global/jobs/samples-clustering/results/clustering_evaluation_result_Mon_03_Jul_2017_23_39_05.487591743.tsv
-56M	/var/glfs/global/jobs/samples-clustering/results/genes_by_samples_heatmap_cc_net_nmf_Mon_03_Jul_2017_23_39_09.115032196_viz.tsv
-594K	/var/glfs/global/jobs/samples-clustering/results/genes_averages_by_cluster_cc_net_nmf_Mon_03_Jul_2017_23_39_17.276435136_viz.tsv
-404K	/var/glfs/global/jobs/samples-clustering/results/genes_variance_cc_net_nmf_Mon_03_Jul_2017_23_39_17.396065711_viz.tsv
-305K	/var/glfs/global/jobs/samples-clustering/results/top_genes_by_cluster_cc_net_nmf_Mon_03_Jul_2017_23_39_17.440115690_download.tsv
-58M	/var/glfs/global/jobs/samples-clustering/results
-4.5K	/var/glfs/global/jobs/samples-clustering/job-parameters.yml
-58M	/var/glfs/global/jobs/samples-clustering
-58M	/var/glfs/global/jobs
-```
-
-We can see that no matter which node ran our jobs, all of our output files are available in one place.
-
-NOTE: On multi-node clusters, you will need to SSH to a compute node or start a container mounting the shared storage. The shared storage is not currently mounted on the master.
+The current examples produce no output, so this pattern is still under development.
 
 ## Cleaning Up Jobs
 Kubernetes leaves it up to the user to delete their own Job objects, which stick around indefinitely to ease debugging.
 
 To delete a job (and trigger clean up of its corresponding pods):
 ```bash
-kubectl delete jobs/gcc-test
+kubectl delete job hello-c
 ```
 
 To delete all jobs:
