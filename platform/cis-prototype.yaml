@@ -42,7 +42,7 @@ spec:
         - name: RABBIT_HOST
           value: $(RABBITMQ_SERVICE_HOST)
         - name: RABBIT_NAMESPACE
-          value: lambert8
+          value: apiserver
         volumeMounts:
         - name: apisrc 
           mountPath: /usr/src/app/
