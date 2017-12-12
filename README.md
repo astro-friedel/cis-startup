@@ -54,34 +54,47 @@ To run the Crops in Silico platform and a Cloud9 IDE:
 ## Behind the Scenes
 The `./cis.sh` helper script does several things:
 * Ensures that the user has a `basic-auth` secret set up for Cloud9 to consume
-* Ensures that the source code is checked out to `/home/core` (you will be prompted for your BitBucket credentials)
+* ~~Ensures that the source code is checked out to `/home/core` (you will be prompted for your GitHub credentials)~~
 * Generates self-signed SSL certs if they are not found for the given domain
 * Ensures that certificates have been imported as Kubernetes secrets
-* Create [ingress rules](ingress.yaml) to route `/ide.html` to Cloud9, and `/` to the Crops in Silico Dashboard
+* Create several [ingress rules](ingress.yaml) to route to the various exposed services
 * Starts up the Kubernetes [NGINX Ingress Controller](https://github.com/kubernetes/ingress/tree/master/controllers/nginx)
 * Starts up a Pod running an instance of RabbitMQ
 * Starts up a Pod running a shell containing a pre-installed [cis_interface](https://github.com/cropsinsilico/cis_interface)
 * Starts up a Pod running the Cloud9 IDE
 
+## Viewable Interfaces
+The [platform ingress rules](platform/ingress.yaml) will set up routes to the following applications:
+* https://cloud9.cis.ndslabs.org will be routed to `/ide.html` on Cloud9
+* https://datawolf.cis.ndslabs.org will route to `/datawolf/editor` on the DataWolf demo instance
+* https://noflo.cis.ndslabs.org will route to `/index.html` on the NoFlo UI demo instance
+* https://prototype.cis.ndslabs.org will route to `/` on the Crops in Silico Prototype UI
+* https://prototype.cis.ndslabs.org/api will route to `/api` on the Crops in Silico Prototype API server
+
+Once all of the containers have started up, we can easily test out the dfferent proposed components to see what might fit best.
+
 # Viewing Pod Logs
 To view the logs of an individual pod (where your work items are being executed):
 ```bash
-root@my-vm:/home/core/cis-startup # kubectl get pods                                                                                                     
-NAME                         READY     STATUS    RESTARTS   AGE
-cloud9-984f9                 1/1       Running   0          4h
-default-http-backend-blrqv   1/1       Running   0          4h
-nest-1442377537-3hhbf        4/4       Running   0          4h
-nginx-ilb-rc-02fzw           1/1       Running   0          4h
+core@my_vm01 ~/cis-startup $ kubectl get pods
+NAME                             READY     STATUS    RESTARTS   AGE
+cis-datawolf-1947004756-4rpwz    1/1       Running   1          23h
+cis-prototype-1660495536-35dbz   2/2       Running   1          8h
+cloud9-4228688985-nmhrh          1/1       Running   1          23h
+default-http-backend-q727m       1/1       Running   1          23h
+nginx-ilb-rc-1sqck               1/1       Running   1          23h
+noflo-ui-898494385-k9npn         1/1       Running   1          23h
+rabbitmq-1016789879-zxzmk        1/1       Running   1          23h
 
 # View the logs of a single-container Pod
-kubectl logs -f nginx-ilb-rc-02fzw
+kubectl logs -f nginx-ilb-rc-1sqck 
 
 # For multi-container pods, you must specify a container with -c
-kubectl logs -f nest-1442377537-3hhbf -c flask
+kubectl logs -f cis-prototype-1660495536-35dbz -c cis-api
 ```
 
-# Running the Framework
-To run the Data Cleanup pipeline:
+# Running the Framework (Coming Soon)
+To run the [`cis_interface`](https://github.com/cropsinsilico/cis_interface) CLI as a Kubernetes Job:
 ```bash
 kubectl create -f framework/hello/python.job.yaml
 kubectl create -f framework/hello/gcc.job.yaml
@@ -90,29 +103,29 @@ kubectl create -f framework/hello/gpp.job.yaml
 
 This will create the Job objects on your Kubernetes cluster. Job objects themselves don't execute anything (and therefore don't keep logs), but they will spawn Pods (groups of containers) to execute the desired work item(s).
 
-## Monitoring Jobs
+## Monitoring Jobs (Coming Soon)
 To view the status of your jobs and their pods:
 ```bash
 core@my-vm ~/cis-startup $ kubectl get jobs,pods -a
-NAME           DESIRED   SUCCESSFUL   AGE
-jobs/gp-test   1         1            1m
+NAME            DESIRED   SUCCESSFUL   AGE
+jobs/gcc-test   1         1            1m
 
-NAME                            READY     STATUS      RESTARTS   AGE
-po/gp-test-hzcq8                0/1       Completed   0          1m
+NAME                             READY     STATUS      RESTARTS   AGE
+po/gcc-test-hzcq8                0/1       Completed   0          1m
 ```
 
 This will list off all running jobs and their respectives pods (replicas).
 
 NOTE: The `-a` flag tells to Kubernetes to include pods that have `Completed` in the returned list.
 
-## Viewing Pod logs
-Use the pod name to check the log output:
+## Viewing Job logs
+We can view the logs for our Jobs the same we that we view logs for other pods:
 ```bash
-# View the logs of a Pod spawned by a Job
-kubectl logs -f gp-test-hzcq8 
+# View the logs of a Pod spawned by the "gcc-test" Job
+kubectl logs -f gcc-test-hzcq8 
 ```
 
-## Viewing output files
+## Viewing output (Coming Soon)
 Check the contents of your shared storage to view output files:
 ```bash
 core@nds842-node1 ~ $ du -h -a /var/glfs/global/jobs
@@ -159,7 +172,7 @@ Kubernetes leaves it up to the user to delete their own Job objects, which stick
 
 To delete a job (and trigger clean up of its corresponding pods):
 ```bash
-kubectl delete jobs/gp-test
+kubectl delete jobs/gcc-test
 ```
 
 To delete all jobs:
