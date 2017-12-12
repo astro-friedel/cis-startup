@@ -96,9 +96,9 @@ kubectl logs -f cis-prototype-1660495536-35dbz -c cis-api
 # Running the Framework (Coming Soon)
 To run the [`cis_interface`](https://github.com/cropsinsilico/cis_interface) CLI as a Kubernetes Job:
 ```bash
-kubectl create -f framework/hello/python.job.yaml
-kubectl create -f framework/hello/gcc.job.yaml
-kubectl create -f framework/hello/gpp.job.yaml
+kubectl create -f framework/hello/hello-py.job.yaml
+kubectl create -f framework/hello/hello-c.job.yaml
+kubectl create -f framework/hello/hello-cpp.job.yaml
 ```
 
 This will create the Job objects on your Kubernetes cluster. Job objects themselves don't execute anything (and therefore don't keep logs), but they will spawn Pods (groups of containers) to execute the desired work item(s).
