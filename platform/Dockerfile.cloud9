@@ -1,6 +1,11 @@
-FROM ndslabs/cloud9-all:latest
+FROM ndslabs/cloud9-nodejs:latest
 
 ENV K8S_VERSION="1.5.2"
+ENV NODEJS_VERSION="8.9.3"
+
+RUN npm install -g n && \
+    n ${NODEJS_VERSION} && \
+    ln -sf /usr/local/n/versions/node/${NODEJS_VERSION}/bin/node /usr/bin/node
 
 # Install kubectl binary
 ADD https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kubectl /usr/bin/kubectl

@@ -24,9 +24,9 @@ services:
       context: https://github.com/cropsinsilico/cis-apiserver.git
     image: bodom0015/cis-apiserver
   noflo-ui:
-    build: 
-      context: https://github.com/cropsinsilico/noflo-ui.git
-    image: bodom0015/noflo-ui
+    image: flowhub/noflo-ui
+    ports:
+     - "9999:9999"
   cis-rabbitmq:
     image: "rabbit:3.6.12"
     ports: 
