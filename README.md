@@ -54,7 +54,6 @@ To run the Crops in Silico platform and a Cloud9 IDE:
 ## Behind the Scenes
 The `./cis.sh` helper script does several things:
 * Ensures that the user has a `basic-auth` secret set up for Cloud9 to consume
-* ~~Ensures that the source code is checked out to `/home/core` (you will be prompted for your GitHub credentials)~~
 * Generates self-signed SSL certs if they are not found for the given domain
 * Ensures that certificates have been imported as Kubernetes secrets
 * Create several [ingress rules](ingress.yaml) to route to the various exposed services

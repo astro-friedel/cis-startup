@@ -57,13 +57,13 @@ fi
 $ECHO ''
 
 # Ensure source directory exists where we expect
-if [ ! -d "$SRC_DIR" ]; then
-    git clone https://github.com/cropsinsilico/Cis_Repository ${SRC_DIR} || exit 1
-else
-    $ECHO source code has already been cloned to the correct location... reusing
-fi
+#if [ ! -d "$SRC_DIR" ]; then
+#    git clone https://github.com/cropsinsilico/Cis_Repository ${SRC_DIR} || exit 1
+#else
+#    $ECHO source code has already been cloned to the correct location... reusing
+#fi
 
-$ECHO ''
+#$ECHO ''
 
 # Make sure that we have self-signed certs generated
 if [ ! -f "${CRT_DIR}/${DOMAIN}.cert" ]; then
