@@ -61,8 +61,8 @@ The `./cis.sh` helper script does several things:
 * Starts up a Pod running an instance of RabbitMQ
 * Starts up a Pod running the Cloud9 IDE
 * Starts up a Pod running the CiS prototype UI / API
-* Starts up a Pod running the NoFlo UI (for consideration)
-* Starts up a Pod running the DataWolf Editor (for consideration)
+* Starts up a Pod running the NoFlo UI (for evaluation)
+* Starts up a Pod running the DataWolf Editor (for evaluation)
 * You should now be able to run some [example Jobs](framework/hello/) using the [cis_interface](https://github.com/cropsinsilico/cis_interface) [Docker container](framework/Dockerfile)
 
 ## Viewable Interfaces
