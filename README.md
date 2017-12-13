@@ -59,8 +59,11 @@ The `./cis.sh` helper script does several things:
 * Create several [ingress rules](ingress.yaml) to route to the various exposed services
 * Starts up the Kubernetes [NGINX Ingress Controller](https://github.com/kubernetes/ingress/tree/master/controllers/nginx)
 * Starts up a Pod running an instance of RabbitMQ
-* Starts up a Pod running a shell containing a pre-installed [cis_interface](https://github.com/cropsinsilico/cis_interface)
 * Starts up a Pod running the Cloud9 IDE
+* Starts up a Pod running the CiS prototype UI / API
+* Starts up a Pod running the NoFlo UI (for consideration)
+* Starts up a Pod running the DataWolf Editor (for consideration)
+* You should now be able to run some [example Jobs](framework/hello/) using the [cis_interface](https://github.com/cropsinsilico/cis_interface) [Docker container](framework/Dockerfile)
 
 ## Viewable Interfaces
 The [platform ingress rules](platform/ingress.yaml) will set up routes to the following applications:
