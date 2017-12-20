@@ -40,7 +40,7 @@ spec:
          name: runmetadata
       containers:
       - name: cloud9 
-        image: ndslabs/cloud9-all:latest
+        image: ndslabs/cloud9-nodejs:latest
         securityContext:
           privileged: true
         volumeMounts:
