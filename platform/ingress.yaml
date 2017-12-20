@@ -50,28 +50,6 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/app-root: "/datawolf/editor"
-  name: cis-datawolf
-spec:
-  tls:
-  - hosts:
-    - datawolf.cis.ndslabs.org
-    secretName: cis-tls-secret
-  rules:
-  - host: datawolf.cis.ndslabs.org
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: cis-datawolf
-          servicePort: 8888
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
   name: cloud9
   annotations:
     nginx.ingress.kubernetes.io/auth-type: basic

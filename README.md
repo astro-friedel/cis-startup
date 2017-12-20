@@ -62,13 +62,11 @@ The `./cis.sh` helper script does several things:
 * Starts up a Pod running the Cloud9 IDE
 * Starts up a Pod running the CiS prototype UI / API
 * Starts up a Pod running the NoFlo UI (for evaluation)
-* Starts up a Pod running the DataWolf Editor (for evaluation)
 * You should now be able to run some [example Jobs](framework/hello/) using the [cis_interface](https://github.com/cropsinsilico/cis_interface) [Docker container](framework/Dockerfile)
 
 ## Viewable Interfaces
 The [platform ingress rules](platform/ingress.yaml) will set up routes to the following applications:
 * https://cloud9.cis.ndslabs.org will be routed to `/ide.html` on Cloud9
-* https://datawolf.cis.ndslabs.org will route to `/datawolf/editor` on the DataWolf demo instance
 * https://noflo.cis.ndslabs.org will route to `/index.html` on the NoFlo UI demo instance
 * https://prototype.cis.ndslabs.org will route to `/` on the Crops in Silico Prototype UI
 * https://prototype.cis.ndslabs.org/api will route to `/api` on the Crops in Silico Prototype API server
@@ -82,7 +80,6 @@ To view the logs of an individual pod (or container):
 ```bash
 core@my_vm01 ~/cis-startup $ kubectl get pods
 NAME                             READY     STATUS    RESTARTS   AGE
-cis-datawolf-1947004756-4rpwz    1/1       Running   1          23h
 cis-prototype-1660495536-35dbz   2/2       Running   1          8h
 cloud9-4228688985-nmhrh          1/1       Running   1          23h
 default-http-backend-q727m       1/1       Running   1          23h
