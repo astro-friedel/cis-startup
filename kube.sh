@@ -65,7 +65,7 @@ docker --version >/dev/null 2>&1 || ($ECHO 'Docker must be installed to run Kube
         --address="0.0.0.0" \
         --api-servers=http://localhost:8080 \
         --config=/etc/kubernetes/manifests \
-	--allow-privileged=true --v=5 \
+	--allow-privileged=true --v=2 \
         >/dev/null 2>&1 \
     || docker start kubelet >/dev/null 2>&1)
 $ECHO 'Waiting for Kubernetes API server to start on port 8080...'

@@ -25,27 +25,50 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
+  name: cis-auth
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-  name: cis-prototype
+    "nginx.ingress.kubernetes.io/auth-url": "https://www.cis.ndslabs.org/oauth2/auth"
+    "nginx.ingress.kubernetes.io/auth-signin": "https://www.cis.ndslabs.org/oauth2/sign_in"
+    "nginx.ingress.kubernetes.io/ssl-redirect": "true"
+    "nginx.ingress.kubernetes.io/force-ssl-redirect": "true"
 spec:
   tls:
   - hosts:
-    - proto.cis.ndslabs.org
-    secretName: cis-tls-secret
+    - www.cis.ndslabs.org
+    secretName: ndslabs-tls-secret
   rules:
-  - host: proto.cis.ndslabs.org
+  - host: www.cis.ndslabs.org
     http:
       paths:
       - path: /
         backend:
           serviceName: cis-prototype
           servicePort: 80
-      - path: /api
+      - path: /oauth2/api/
         backend:
           serviceName: cis-prototype
           servicePort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cis-open
+  annotations:
+    "nginx.ingress.kubernetes.io/ssl-redirect": "true"
+    "nginx.ingress.kubernetes.io/force-ssl-redirect": "true"
+spec:
+  tls:
+  - hosts:
+    - www.cis.ndslabs.org
+    secretName: ndslabs-tls-secret
+  rules:
+  - host: www.cis.ndslabs.org
+    http:
+      paths:
+      - path: /oauth2/
+        backend:
+          serviceName: oauth2-proxy
+          servicePort: 4180
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
