@@ -21,24 +21,15 @@ spec:
         backend:
           serviceName: cis-girder
           servicePort: 80
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-  name: cis-girder
-spec:
-  tls:
-  - hosts:
-    - girder.cis.ndslabs.org
-    secretName: cis-tls-secret
-  rules:
-  - host: girder.cis.ndslabs.org
-    http:
-      paths:
-      - path: /
+      - path: /girder/
+        backend:
+          serviceName: cis-girder
+          servicePort: 8080
+      - path: /static/
+        backend:
+          serviceName: cis-girder
+          servicePort: 8080
+      - path: /api/v1/
         backend:
           serviceName: cis-girder
           servicePort: 8080
