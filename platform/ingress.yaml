@@ -6,46 +6,56 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/app-root: "/index.html"
-  name: cis-noflo
+  name: cis-ui
 spec:
   tls:
   - hosts:
-    - noflo.cis.ndslabs.org
+    - www.cis.ndslabs.org
     secretName: cis-tls-secret
   rules:
-  - host: noflo.cis.ndslabs.org
+  - host: www.cis.ndslabs.org
     http:
       paths:
       - path: /
         backend:
-          serviceName: noflo-ui
-          servicePort: 9999
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-  name: cis-prototype
-spec:
-  tls:
-  - hosts:
-    - proto.cis.ndslabs.org
-    secretName: cis-tls-secret
-  rules:
-  - host: proto.cis.ndslabs.org
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: cis-prototype
+          serviceName: cis-girder
           servicePort: 80
+      - path: /girder
+        backend:
+          serviceName: cis-girder
+          servicePort: 8080
+      - path: /static
+        backend:
+          serviceName: cis-girder
+          servicePort: 8080
       - path: /api
         backend:
-          serviceName: cis-prototype
+          serviceName: cis-girder
           servicePort: 8080
+# TODO: Tie into Kubernetes OAuth?
+# ---
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: cis-auth
+#   annotations:
+#     "nginx.ingress.kubernetes.io/auth-url": "https://www.cis.ndslabs.org/oauth2/auth"
+#     "nginx.ingress.kubernetes.io/auth-signin": "https://www.cis.ndslabs.org/oauth2/sign_in"
+#     "nginx.ingress.kubernetes.io/ssl-redirect": "true"
+#     "nginx.ingress.kubernetes.io/force-ssl-redirect": "true"
+# spec:
+#   tls:
+#   - hosts:
+#     - www.cis.ndslabs.org
+#     secretName: ndslabs-tls-secret
+#   rules:
+#   - host: www.cis.ndslabs.org
+#     http:
+#       paths:
+#       - path: /
+#         backend:
+#           serviceName: cis-girder
+#           servicePort: 80
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
