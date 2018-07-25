@@ -78,7 +78,7 @@ spec:
         hostPath:
           path: /home/ubuntu/cis-girder-plugin/
       containers:
-      - image: cropsinsilico/cis-ui:stable
+      - image: cropsinsilico/cis-ui:latest
         imagePullPolicy: Always
         name: cis-ui
         ports:
@@ -86,7 +86,7 @@ spec:
         volumeMounts:
         - name: uisrc
           mountPath: /usr/share/nginx/html/
-      - image: cropsinsilico/girder:stable
+      - image: cropsinsilico/girder:latest
         imagePullPolicy: Always
         name: girder
         ports:
