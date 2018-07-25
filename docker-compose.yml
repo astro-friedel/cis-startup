@@ -19,15 +19,11 @@ services:
     build: 
       context: https://github.com/cropsinsilico/cis-ui.git
     image: cropsinsilico/cis-ui
-  cis-api:
-    build: 
-      context: https://github.com/cropsinsilico/cis-apiserver.git
-    image: cropsinsilico/cis-apiserver
-  noflo-ui:
-    image: flowhub/noflo-ui
     ports:
-     - "9999:9999"
-  cis-rabbitmq:
-    image: "rabbit:3.6.12"
-    ports: 
-     - "5672:5672"
+     - "80:80"
+  girder:
+    build:
+      context: https://github.com/cropsinsilico/cis-girder-plugin
+    image: cropsinsilico/girder:latest
+    ports:
+     - "8080:8080"
