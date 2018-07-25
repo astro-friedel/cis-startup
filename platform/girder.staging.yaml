@@ -71,29 +71,17 @@ spec:
       - name: mongodata
         hostPath:
           path: /home/ubuntu/cis-staging/mongodata
-      - name: uisrc
-        hostPath:
-          path: /home/ubuntu/cis-ui/
-      - name: pluginsrc
-        hostPath:
-          path: /home/ubuntu/cis-girder-plugin/
       containers:
-      - image: cropsinsilico/cis-ui:fix-generate-manifest
-        imagePullPolicy: IfNotPresent
+      - image: cropsinsilico/cis-ui:staging
+        imagePullPolicy: Always
         name: cis-ui
         ports:
         - containerPort: 80
-        volumeMounts:
-        - name: uisrc
-          mountPath: /usr/share/nginx/html/
-      - image: cropsinsilico/girder:stable
+      - image: cropsinsilico/girder:staging
         imagePullPolicy: Always
         name: girder
         ports:
         - containerPort: 8080
-        volumeMounts:
-        - name: pluginsrc
-          mountPath: /girder/plugins/cis/
       - image: mongo:3.3
         imagePullPolicy: Always
         name: mongo
