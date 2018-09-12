@@ -1,0 +1,89 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"extensions/v1beta1","kind":"Ingress","metadata":{"annotations":{"nginx.ingress.kubernetes.io/auth-realm":"Authentication Required","nginx.ingress.kubernetes.io/auth-secret":"basic-auth","nginx.ingress.kubernetes.io/auth-type":"basic","nginx.ingress.kubernetes.io/force-ssl-redirect":"true","nginx.ingress.kubernetes.io/ssl-redirect":"true"},"name":"cloud9","namespace":"default"},"spec":{"rules":[{"host":"cloud9.cis.ndslabs.org","http":{"paths":[{"backend":{"serviceName":"cloud9","servicePort":80},"path":"/"}]}}],"tls":[{"hosts":["cloud9.cis.ndslabs.org"],"secretName":"cis-tls-secret"}]}}
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: cloud9
+spec:
+  rules:
+  - host: cloud9.cis.ndslabs.org
+    http:
+      paths:
+      - backend:
+          serviceName: cloud9
+          servicePort: 80
+        path: /
+  tls:
+  - hosts:
+    - cloud9.cis.ndslabs.org
+    secretName: cis-tls-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloud9
+  labels:
+    component: cloud9
+spec:
+  selector:
+    component: cloud9
+  ports:
+    - port: 80
+      protocol: TCP
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cloud9
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: cloud9
+    spec:
+      volumes:
+       - hostPath:
+            path: "/home/core"
+         name: src
+       - hostPath:
+            path: "/var/run/docker.sock"
+         name: dockersock
+       - hostPath:
+            path: "/usr/bin/docker"
+         name: dockerbin
+       - hostPath:
+            path: "/run/torcx"
+         name: runtorcx
+       - hostPath:
+            path: "/run/metadata"
+         name: runmetadata
+      containers:
+      - name: cloud9
+        image: ndslabs/cloud9-nodejs:latest
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - name: src
+            mountPath: "/workspace"
+          - name: dockersock
+            mountPath: "/var/run/docker.sock"
+          - name: dockerbin
+            mountPath: "/usr/bin/docker"
+          - name: runtorcx
+            mountPath: "/run/torcx"
+          - name: runmetadata
+            mountPath: "/run/metadata"
+        env:
+        # Enable collaborative editing
+        - name: C9_EXTRA
+          value: "--collab"
+        ports:
+        - containerPort: 80
+          protocol: TCP

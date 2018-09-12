@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cis-staging
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  name: cis-girder
+  namespace: cis-staging
+spec:
+  tls:
+  - hosts:
+    - staging.cis.ndslabs.org
+    secretName: cis-tls-secret
+  rules:
+  - host: staging.cis.ndslabs.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: cis-girder
+          servicePort: 80
+      - path: /girder
+        backend:
+          serviceName: cis-girder
+          servicePort: 8080
+      - path: /static
+        backend:
+          serviceName: cis-girder
+          servicePort: 8080
+      - path: /api
+        backend:
+          serviceName: cis-girder
+          servicePort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    component: cis-girder
+  name: cis-girder
+  namespace: cis-staging
+spec:
+  ports:
+  - name: http
+    port: 80
+  - name: admin
+    port: 8080
+  selector:
+    component: cis-girder
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    component: cis-girder
+  name: cis-girder
+  namespace: cis-staging
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: cis-girder
+    spec:
+      volumes:
+      - name: mongodata
+        hostPath:
+          path: /home/ubuntu/cis-staging/mongodata
+      containers:
+      - image: cropsinsilico/cis-ui:staging
+        imagePullPolicy: Always
+        name: cis-ui
+        ports:
+        - containerPort: 80
+      - image: cropsinsilico/girder:staging
+        imagePullPolicy: Always
+        name: girder
+        ports:
+        - containerPort: 8080
+      - image: mongo:3.3
+        imagePullPolicy: Always
+        name: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongodata
+          mountPath: /data/db

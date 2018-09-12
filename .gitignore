@@ -3,3 +3,10 @@ data/
 
 # Temporary experiment in running each model in it own container
 framework/LeM
+
+# Don't commit SSL/TLS certificates
+**/*.secret.yaml
+**/*.cert
+**/*.cer
+**/*.key
+**/*.pem

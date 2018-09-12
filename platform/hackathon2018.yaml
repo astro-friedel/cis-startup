@@ -1,35 +1,38 @@
-# Ingress rules assign a hostname/path to expose particular ports to the public internet
-# NOTE: "Host" header must match in order to be routed
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cis-hackathon-2018
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    # TODO: Tie into Kubernetes OAuth?
-  name: cis-ui
+  name: cis-girder
+  namespace: cis-hackathon-2018
 spec:
   tls:
   - hosts:
-    - www.cis.ndslabs.org
+    - hackathon.cis.ndslabs.org
     secretName: cis-tls-secret
   rules:
-  - host: www.cis.ndslabs.org
+  - host: hackathon.cis.ndslabs.org
     http:
       paths:
       - path: /
         backend:
           serviceName: cis-girder
           servicePort: 80
-      - path: /girder/
+      - path: /girder
         backend:
           serviceName: cis-girder
           servicePort: 8080
-      - path: /static/
+      - path: /static
         backend:
           serviceName: cis-girder
           servicePort: 8080
-      - path: /api/v1/
+      - path: /api
         backend:
           serviceName: cis-girder
           servicePort: 8080
@@ -40,6 +43,7 @@ metadata:
   labels:
     component: cis-girder
   name: cis-girder
+  namespace: cis-hackathon-2018
 spec:
   ports:
   - name: http
@@ -55,6 +59,7 @@ metadata:
   labels:
     component: cis-girder
   name: cis-girder
+  namespace: cis-hackathon-2018
 spec:
   replicas: 1
   template:
@@ -65,30 +70,18 @@ spec:
       volumes:
       - name: mongodata
         hostPath:
-          path: /home/core/mongodata
-      - name: pluginsrc
-        hostPath:
-          path: /home/core/cis-girder-plugin
-      - name: uisrc
-        hostPath:
-          path: /home/core/cis-ui
+          path: /home/ubuntu/hackathon2018/mongodata
       containers:
-      - image: cropsinsilico/cis-ui
+      - image: cropsinsilico/cis-ui:stable
         imagePullPolicy: Always
         name: cis-ui
         ports:
         - containerPort: 80
-        volumeMounts:
-        - name: uisrc
-          mountPath: /usr/share/nginx/html
-      - image: cropsinsilico/girder:2.3.0
+      - image: cropsinsilico/girder:stable
         imagePullPolicy: Always
         name: girder
         ports:
         - containerPort: 8080
-        volumeMounts:
-        - name: pluginsrc
-          mountPath: /girder/plugins/cis
       - image: mongo:3.3
         imagePullPolicy: Always
         name: mongo
