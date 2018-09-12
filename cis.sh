@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Start Kubernetes
-./kube.sh
+#./kube.sh
 
 # Location of "kubectl" binary
-BINDIR="$HOME/bin"
+BINDIR="/usr/bin"
 ECHO="echo -e"
 
 $ECHO ''
@@ -13,7 +13,7 @@ $ECHO ''
 DOMAIN="*.cis.ndslabs.org"
 
 # Locations of source code / TLS certs
-SRC_DIR="/home/core/Cis_Repository"
+SRC_DIR="/home/ubuntu/Cis_Repository"
 CRT_DIR="${SRC_DIR}/kubernetes"
 
 # Stop everything first

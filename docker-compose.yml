@@ -5,29 +5,25 @@ services:
   # Framework / Models
   cis-interface:
     build: ./framework/
-    image: bodom0015/cis_interface
+    image: cropsinsilico/cis_interface
 
   # IDE
   cis-cloud9:
     build:
       context: ./platform/
       dockerfile: Dockerfile.cloud9
-    image: bodom0015/cloud9-cis
+    image: cropsinsilico/cloud9
     
   # Platform
   cis-ui:
     build: 
       context: https://github.com/cropsinsilico/cis-ui.git
-    image: bodom0015/cis-ui
-  cis-api:
-    build: 
-      context: https://github.com/cropsinsilico/cis-apiserver.git
-    image: bodom0015/cis-apiserver
-  noflo-ui:
-    image: flowhub/noflo-ui
+    image: cropsinsilico/cis-ui
     ports:
-     - "9999:9999"
-  cis-rabbitmq:
-    image: "rabbit:3.6.12"
-    ports: 
-     - "5672:5672"
+     - "80:80"
+  girder:
+    build:
+      context: https://github.com/cropsinsilico/cis-girder-plugin
+    image: cropsinsilico/girder:latest
+    ports:
+     - "8080:8080"
