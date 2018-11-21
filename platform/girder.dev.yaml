@@ -9,6 +9,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
   name: cis-girder
   namespace: cis-dev
 spec:
@@ -67,10 +68,11 @@ spec:
       labels:
         component: cis-girder
     spec:
+      serviceAccountName: cis
       volumes:
       - name: mongodata
         hostPath:
-          path: /home/ubuntu/mongodata
+          path: /home/ubuntu/mongodata/dev
       - name: uisrc
         hostPath:
           path: /home/ubuntu/cis-ui/

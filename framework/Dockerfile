@@ -1,8 +1,5 @@
 FROM python:3
 
-ENV PKG_DIR="/usr/local/lib/python3.6/site-packages/cis_interface"
+RUN pip install cis_interface
 
-RUN pip install cis_interface astropy requests
-COPY *.sh *.yml ./
-
-ENTRYPOINT [ "./entrypoint.sh" ]
+CMD [ "echo", "Usage: cisrun <yaml_file1> [yaml_file2] [yaml_file3] [...]" ]

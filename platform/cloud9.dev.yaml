@@ -2,13 +2,12 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"extensions/v1beta1","kind":"Ingress","metadata":{"annotations":{"nginx.ingress.kubernetes.io/auth-realm":"Authentication Required","nginx.ingress.kubernetes.io/auth-secret":"basic-auth","nginx.ingress.kubernetes.io/auth-type":"basic","nginx.ingress.kubernetes.io/force-ssl-redirect":"true","nginx.ingress.kubernetes.io/ssl-redirect":"true"},"name":"cloud9","namespace":"default"},"spec":{"rules":[{"host":"cloud9.cis.ndslabs.org","http":{"paths":[{"backend":{"serviceName":"cloud9","servicePort":80},"path":"/"}]}}],"tls":[{"hosts":["cloud9.cis.ndslabs.org"],"secretName":"cis-tls-secret"}]}}
     nginx.ingress.kubernetes.io/auth-realm: Authentication Required
     nginx.ingress.kubernetes.io/auth-secret: basic-auth
     nginx.ingress.kubernetes.io/auth-type: basic
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
   name: cloud9
 spec:
   rules:
@@ -50,7 +49,7 @@ spec:
     spec:
       volumes:
        - hostPath:
-            path: "/home/core"
+            path: "/home/ubuntu"
          name: src
        - hostPath:
             path: "/var/run/docker.sock"
