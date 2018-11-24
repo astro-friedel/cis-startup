@@ -1,0 +1,102 @@
+# Example Jupyterhub configuration for ESIPhub
+hub:
+  nginx:
+    proxyBodySize: 64m
+  # output of second execution of 'openssl rand -hex 32'
+  cookieSecret: ""
+  db:
+    type: sqlite-pvc
+    pvc:
+      accessModes:
+        - ReadWriteOnce
+      storage: 1Gi
+      storageClassName: nfs
+  extraEnv:
+    JUPYTER_ENABLE_LAB: 1
+  extraConfig: |
+
+    origin = '*' #'https://dev.cis.ndslabs.org'
+    methods = '*' #'OPTIONS,GET,POST,PUT,PATCH,HEAD,DELETE'
+    c.JupyterHub.tornado_settings = {
+        'headers': {
+            'Access-Control-Allow-Origin': origin,
+            'Access-Control-Allow-Methods': methods,
+         },
+    }
+    c.NotebookApp.allow_origin = origin
+    c.NotebookApp.allow_methods = methods
+    c.Spawner.args = ['--NotebookApp.allow_origin={0}'.format(origin)] #, '--NotebookApp.allow_methods={0}'.format(methods)]
+    c.KubeSpawner.args = ['--NotebookApp.allow_origin={0}'.format(origin)] #, '--NotebookApp.allow_methods={0}'.format(methods)]
+    c.KubeSpawner.cmd = ['jupyter-labhub']
+
+prePuller:
+  hook:
+    enabled: false
+
+proxy:
+  # output of second execution of 'openssl rand -hex 32'
+  secretToken: ""
+  nginx:
+     proxyBodySize: 64m
+
+
+# Uncomment to use github oauth instead of static dictionary 
+auth:
+  type: github
+  github:
+    # CiS Prod
+    clientId: ""
+    clientSecret: ""
+    # CiS Dev
+    #clientId: "181fafe7173b44fe6728"
+    #clientSecret: "05cd931dbdd04b5445bb391344fdb1557691ed20"
+    callbackUrl: "https://hub.cis.ndslabs.org/hub/oauth_callback"
+    #    org_whitelist:
+    #  - "cropsinsilico"
+    #scopes:
+    #  - "read:org"
+    #  - "read:user"
+
+singleuser:
+  lifecycleHooks:
+    postStart:
+      exec:
+        command: 
+          - "sh"
+          - "-c"
+          - >
+            mkdir -p /home/jovyan/models
+            gitpuller https://github.com/cropsinsilico/C3PhotosynthesisMetabolicModel master /home/jovyan/models/ ;
+            gitpuller https://github.com/cropsinsilico/ProtTranslationModel_CO2 master /home/jovyan/models/ ;
+            cd /usr/local/matlab/extern/engines/python ; 
+            python setup.py build -b /tmp install;
+  memory:
+    guarantee: 1G
+    limit: 8G
+  storage:
+    type: dynamic
+    capacity: 1Gi
+    dynamic:
+      storageClass: nfs
+    extraVolumeMounts:
+      - name: matlab
+        mountPath: /usr/local/matlab
+    extraVolumes:
+      - name: matlab
+        hostPath:
+          path: /usr/local/MATLAB/R2018a
+  image:
+    name: cropsinsilico/jupyterlab
+    tag: latest
+            
+ingress:
+  enabled: true
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod 
+    ingress.kubernetes.io/proxy-body-size: 64m
+  hosts:
+    - hub.cis.ndslabs.org
+  tls:
+   - hosts:
+      - hub.cis.ndslabs.org
+     secretName: cis-tls-secret
