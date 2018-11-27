@@ -1,0 +1,79 @@
+# JupyerHub configuration for CiS
+hub:
+  nginx:
+    proxyBodySize: 64m
+  # output of second execution of 'openssl rand -hex 32'
+  cookieSecret: ""
+  db:
+    type: sqlite-pvc
+    pvc:
+      accessModes:
+        - ReadWriteOnce
+      storage: 1Gi
+      storageClassName: nfs
+  extraEnv:
+    JUPYTER_ENABLE_LAB: 1
+  extraConfig: |
+    c.KubeSpawner.cmd = ['jupyter-labhub']
+
+prePuller:
+  hook:
+    enabled: false
+
+proxy:
+  # output of second execution of 'openssl rand -hex 32'
+  secretToken: ""
+  nginx:
+     proxyBodySize: 64m
+
+
+auth:
+  type: github
+  github:
+    clientId: ""
+    clientSecret: ""
+    callbackUrl: "https://hub.cis.ndslabs.org/hub/oauth_callback"
+
+singleuser:
+  lifecycleHooks:
+    postStart:
+      exec:
+        command: 
+          - "sh"
+          - "-c"
+          - >
+            mkdir -p /home/jovyan/models
+            gitpuller https://github.com/cropsinsilico/C3PhotosynthesisMetabolicModel master /home/jovyan/models/ ;
+            gitpuller https://github.com/cropsinsilico/ProtTranslationModel_CO2 master /home/jovyan/models/ ;
+            cd /usr/local/matlab/extern/engines/python ; 
+            python setup.py build -b /tmp install;
+  memory:
+    guarantee: 1G
+    limit: 8G
+  storage:
+    type: dynamic
+    capacity: 1Gi
+    dynamic:
+      storageClass: nfs
+    extraVolumeMounts:
+      - name: matlab
+        mountPath: /usr/local/matlab
+    extraVolumes:
+      - name: matlab
+        hostPath:
+          path: /usr/local/MATLAB/R2018a
+  image:
+    name: cropsinsilico/jupyterlab
+    tag: latest
+            
+ingress:
+  enabled: true
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod 
+    ingress.kubernetes.io/proxy-body-size: 64m
+  hosts:
+    - hub.cis.ndslabs.org
+  tls:
+   - hosts:
+      - hub.cis.ndslabs.org
+     secretName: cis-tls-secret
