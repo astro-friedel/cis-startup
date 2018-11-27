@@ -6,7 +6,13 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: cis
+  namespace: cis
+- kind: ServiceAccount
+  name: cis
   namespace: cis-dev
+- kind: ServiceAccount
+  name: cis
+  namespace: cis-staging
 roleRef:
   kind: ClusterRole
   name: job-submission

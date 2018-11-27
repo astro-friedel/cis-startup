@@ -3,6 +3,12 @@ kind: Namespace
 metadata:
   name: cis-dev
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cis
+  namespace: cis-dev
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
