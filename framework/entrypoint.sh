@@ -2,7 +2,7 @@
 
 export OUTPUT_DIR="${PKG_DIR}/examples/hello/"
 export TEMPLATE_PATH="${PKG_DIR}/defaults.cfg"
-export CFG_PATH="/root/.cis_interface.cfg"
+export CFG_PATH="/root/.yggdrasil.cfg"
 
 # Build up a parameters from our env
 cat ${TEMPLATE_PATH} | sed -e "s#host:.*#host: ${RABBIT_HOST:-localhost}#" \

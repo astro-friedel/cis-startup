@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export K8S_VERSION=1.5.2
+export K8S_VERSION=1.18.4
 export BINDIR="$HOME/bin"
 ECHO='echo -e'
 
@@ -52,20 +52,22 @@ docker --version >/dev/null 2>&1 || ($ECHO 'Docker must be installed to run Kube
     --volume=/var/lib/docker/:/var/lib/docker:rw \
     --volume=/var/lib/kubelet:/var/lib/kubelet:rw,shared \
     --volume=/var/run:/var/run:rw \
-    --volume=$(pwd)/manifests:/etc/kubernetes/manifests/1.5 \
+    --volume=/etc/kubernetes:/etc/kubernetes:rw,shared \
+    --volume=$(pwd)/manifests/1.18:/etc/kubernetes/cis-manifests \
+    --volume=$(pwd)/conf:/etc/kubernetes/conf \
     --net=host \
     --pid=host \
     --privileged=true \
     --name=kubelet \
     -d \
     gcr.io/google_containers/hyperkube-amd64:v${K8S_VERSION} \
-    /hyperkube kubelet \
-        --containerized \
+    kubelet \
         --hostname-override="127.0.0.1" \
         --address="0.0.0.0" \
-        --api-servers=http://localhost:8080 \
-        --config=/etc/kubernetes/manifests \
-	--allow-privileged=true --v=2 \
+        --config=/etc/kubernetes/config/kube.conf \
+        --manifest-url=/etc/kubernetes/manifests \
+        --kubeconfig=/etc/kubernetes/controller-manager.conf \
+	    --v=2 \
         >/dev/null 2>&1 \
     || docker start kubelet >/dev/null 2>&1)
 $ECHO 'Waiting for Kubernetes API server to start on port 8080...'
@@ -85,7 +87,7 @@ if [ ! -d "$BINDIR" ]; then
 fi
 
 # Wait for Kubernetes to start
-until $(curl --output /dev/null --silent --head --fail http://localhost:8080); do   
+until $(curl --output /dev/null --silent --head --fail http://localhost:8080); do
   $ECHO 'Trying again in 5 seconds...'
   sleep 5s # wait for 5s before checking again
   kube_output=$($BINDIR/kubectl get pods)

@@ -5,25 +5,27 @@ services:
   # Framework / Models
   cis-interface:
     build: ./framework/
-    image: cropsinsilico/cis_interface
+    image: testcropsinsilico/yggdrasil
 
   # IDE
   cis-cloud9:
     build:
-      context: ./platform/
+      context: ./platform/dev
       dockerfile: Dockerfile.cloud9
-    image: cropsinsilico/cloud9
-    
+      args:
+        - verbose
+    image: testcropsinsilico/cloud9
+
   # Platform
   cis-ui:
-    build: 
-      context: https://github.com/cropsinsilico/cis-ui.git
-    image: cropsinsilico/cis-ui
+    build:
+      context: https://github.com/astro-friedel/cis-ui.git
+    image: testcropsinsilico/cis-ui:latest
     ports:
      - "80:80"
   girder:
     build:
-      context: https://github.com/cropsinsilico/cis-girder-plugin
-    image: cropsinsilico/girder:latest
+      context: https://github.com/astro-friedel/cis-girder-plugin.git
+    image: testcropsinsilico/girder:latest
     ports:
      - "8080:8080"

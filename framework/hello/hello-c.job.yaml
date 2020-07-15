@@ -9,7 +9,8 @@ spec:
     spec:
       containers:
       - name: cisrun
-        image: bodom0015/cis_interface
+        image: testcropsinsilico/yggdrasil
+        imagePullPolicy: Never
         args: [ "$(YAML_FILES)" ]
         env:
         - name: RABBIT_HOST
@@ -17,5 +18,5 @@ spec:
         - name: RABBIT_NAMESPACE
           value: "apiserver"
         - name: YAML_FILES
-          value: "/usr/local/lib/python3.6/site-packages/cis_interface/examples/hello/hello_c.yml"
+          value: "/usr/local/lib/python3.8/site-packages/yggdrasil/examples/hello/hello_c.yml"
       restartPolicy: Never

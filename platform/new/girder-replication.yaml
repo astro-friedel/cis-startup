@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    component: cis-girder
+  name: cis-girder
+  namespace: cis-dev
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: cis-girder
+    spec:
+      serviceAccountName: cis
+      volumes:
+      - name: mongodata
+        hostPath:
+          path: /home/ubuntu/mongodata/dev
+      - name: uisrc
+        hostPath:
+          path: /home/ubuntu/cis-ui/
+      - name: pluginsrc
+        hostPath:
+          path: /home/ubuntu/cis-girder-plugin/
+      containers:
+      - image: testcropsinsilico/cis-ui:latest
+        imagePullPolicy: IfNotPresent
+        name: cis-ui
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: uisrc
+          mountPath: /usr/share/nginx/html/
+      - image: testcropsinsilico/girder:latest
+        imagePullPolicy: IfNotPresent
+        name: girder
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: pluginsrc
+          mountPath: /girder/plugins/cis/
+      - image: mongo:4.4.0-rc11
+        imagePullPolicy: IfNotPresent
+        name: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongodata
+          mountPath: /data/db

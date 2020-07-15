@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud9
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: cloud9-0
+  template:
+    metadata:
+      labels:
+        name: cloud9-0
+        component: cloud9
+    spec:
+      volumes:
+       - hostPath:
+            path: "/home/ubuntu"
+         name: src
+       - hostPath:
+            path: "/var/run/docker.sock"
+         name: dockersock
+       - hostPath:
+            path: "/usr/bin/docker"
+         name: dockerbin
+       - hostPath:
+            path: "/run/torcx"
+         name: runtorcx
+       - hostPath:
+            path: "/run/metadata"
+         name: runmetadata
+      containers:
+      - name: cloud9
+        image: testcropsinsilico/cloud9
+        imagePullPolicy: Never
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - name: src
+            mountPath: "/workspace"
+          - name: dockersock
+            mountPath: "/var/run/docker.sock"
+          - name: dockerbin
+            mountPath: "/usr/bin/docker"
+          - name: runtorcx
+            mountPath: "/run/torcx"
+          - name: runmetadata
+            mountPath: "/run/metadata"
+        env:
+        # Enable collaborative editing
+        - name: C9_EXTRA
+          value: "--collab"
+        ports:
+        - containerPort: 80
+          protocol: TCP
