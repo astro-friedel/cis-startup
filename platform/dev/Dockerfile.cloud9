@@ -1,9 +1,58 @@
-FROM ndslabs/cloud9-nodejs:latest
+FROM ubuntu:focal
 
-ENV K8S_VERSION="1.18.6"
-ENV NODEJS_VERSION="12.14.1"
+RUN apt-get -qq update && \
+    apt-get -qq install --no-install-recommends \
+        build-essential \
+        curl \
+        ca-certificates \
+        git \
+        sudo \
+        lsof \
+        python3 \
+        vim && \
+    curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
+    apt-get -qq update && \
+    apt-get -qq install --no-install-recommends \
+        nodejs && \
+    apt-get -qq clean all && \
+    apt-get -qq autoclean && \
+    apt-get -qq autoremove && \
+    curl -o- -L https://yarnpkg.com/install.sh | bash && \
+    rm -rf /var/lib/apt/lists/* /tmp/*
 
-RUN npm install -g n && \
+RUN git clone --depth 1 --single-branch https://github.com/astro-friedel/core.git /cloud9
+WORKDIR /cloud9
+RUN scripts/install-sdk.sh
+
+RUN C9_DIR=$HOME/.c9 && PATH="$C9_DIR/node/bin/:$C9_DIR/node_modules/.bin:$PATH" && cd $C9_DIR && yarn add node-pty
+RUN sed -i -e 's_127.0.0.1_0.0.0.0_g' /cloud9/configs/standalone.js
+
+RUN mkdir /workspace
+VOLUME /workspace
+
+EXPOSE 80
+
+CMD ["node", "/cloud9/server.js", "-p", "80", "-w", "/workspace", "-a", ":", "--listen", "0.0.0.0" ]
+
+##############################
+
+RUN apt-get -qq update && \
+    apt-get -qq install --no-install-recommends nodejs && \
+    if [ ! -f /usr/bin/node ]; then ln -s /usr/bin/nodejs /usr/bin/node; fi && \
+    apt-get -y clean all && \
+    rm -rf /var/lib/apt/lists/* /tmp/* &&\
+    npm install --global yarn
+
+# Install Bower / Grunt / Gulp
+RUN yarn global add bower grunt gulp
+
+
+##############################
+
+ENV K8S_VERSION="1.18.1"
+ENV NODEJS_VERSION="14.4.0"
+
+RUN yarn global add n && \
     n ${NODEJS_VERSION} && \
     ln -sf /usr/local/n/versions/node/${NODEJS_VERSION}/bin/node /usr/bin/node
 
@@ -12,4 +61,6 @@ ADD https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bi
 RUN chmod +x /usr/bin/kubectl
 
 # Install dependency for Docker
+RUN rm -vrf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y libltdl7 && rm -rf /var/lib/apt/lists/*
+~
